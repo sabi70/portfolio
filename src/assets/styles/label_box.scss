@@ -1,0 +1,12 @@
+// label_box.scss
+$surface-neon: rgba(0,127,127, 0.4);
+$border-neon: #8ff;
+$text-neon: #8ff;
+$text-shadow-neon: rgba(0,255,255,0.95);
+
+@mixin box-theme {
+  background-color: $surface-neon;
+  border-color: $border-neon;
+  color: $text-neon;
+  text-shadow: $text-shadow-neon;
+}

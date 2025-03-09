@@ -1,165 +1,240 @@
 <template>
-  <div id="container"></div>
+  <div class="about">
+    <!-- <ThreeModel :customStyle="customStyle"/> -->
+    <div id="about-container">
+      <div id="player-img-container">
+        <img :src="player" id="player-img">
+      </div>
+      <div id="player-info">
+        <div>
+          <h3>Education</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, reprehenderit quos iusto dolor iste odio consectetur placeat accusantium hic? Totam ipsam at exercitationem ullam nesciunt recusandae? Tempora itaque, natus quasi iusto harum impedit sunt doloremque dolore reiciendis beatae reprehenderit labore ipsa velit ducimus dolorem vel asperiores ipsam veniam incidunt pariatur, consequatur nihil neque. Ab, a!</p>
+        </div>
+        <div>
+          <h3>Career</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, reprehenderit quos iusto dolor iste odio consectetur placeat accusantium hic? Totam ipsam at exercitationem ullam nesciunt recusandae? Tempora itaque, natus quasi iusto harum impedit sunt doloremque dolore reiciendis beatae reprehenderit labore ipsa velit ducimus dolorem vel asperiores ipsam veniam incidunt pariatur, consequatur nihil neque. Ab, a!</p>
+        </div>
+        <div>
+          <h3>Projects</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, reprehenderit quos iusto dolor iste odio consectetur placeat accusantium hic? Totam ipsam at exercitationem ullam nesciunt recusandae? Tempora itaque, natus quasi iusto harum impedit sunt doloremque dolore reiciendis beatae reprehenderit labore ipsa velit ducimus dolorem vel asperiores ipsam veniam incidunt pariatur, consequatur nihil neque. Ab, a!</p>
+        </div>
+      </div>
+      <div id="skill-box">
+        <ThreeModel :customStyle="customStyle" v-if="webGLSupport"/>
+        <div v-else id="caution">
+          <h2>Your browser doesnt support WebGL!</h2>
+        </div>
+      </div>
+      <div id="contacts-container">
+        <h2>Contacts:</h2>
+        <div class="hidden">
+          <i class="fa-solid fa-phone"></i>
+          <h3>Lets talk us</h3>
+          <p>+8 61-10-78-99</p>
+        </div>
+        <div class="hidden">
+          <i class="fa-solid fa-envelope-open-text"></i>
+          <h3>Send us email</h3>
+          <a href="mailto:s274abi@gmail.com">s274abi@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-<script>
-import * as THREE from 'three';
-
-
-import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
-
+<script lang="js">
+import WebGL from 'three/addons/capabilities/WebGL.js';
+import ThreeModel from '@/components/ThreeModel.vue';
+import player from '@/assets/images/player/player_4.jpeg'
 
 export default {
+  name: 'AboutView',
+  components: {
+    ThreeModel
+  },
   data() {
-    return {}
+    return {
+      customStyle: {
+        width: 'auto',
+        height: '400px'
+      },
+      player: player,
+      webglSupport: false,
+    }
+  },
+  beforeMount() {
+    this.checkWebGLSupport();
   },
   mounted() {
-    // MAKE SURE TO CALL IT ON MOUNTED LIFECYCLE HOOK WHEN DOM ELEMENTS ARE CREATED
-    this.threeModel();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('show', entry.isIntersecting);
+      })
+    }, {
+      threshold: 0.8,
+    })
+
+    const elements = document.querySelectorAll('.hidden');
+    elements.forEach(el => {
+      observer.observe(el);
+    });
   },
   methods: {
-    threeModel() {
-      const stack = [
-        'HTML', 24,
-        'CSS', 24,
-        'JavaScript', '3',
-        'Vue', '5',
-        'Vuetify', '4',
-        'Figma', '1',
-        'GIMP', '1',
-        'Nginx', '1',
-        'Python', '36',
-        'Django', '6',
-        'Gunicorn', '1',
-        'Postman', '4',
-        'Docker', '1',
-        'Linux', '36',
-        'Git', '12',
-      ];
-      let camera, scene, renderer;
-      let cssRenderer;
-      let controls;
-
-      const objects = [];
-      const aspectRatio = window.innerWidth / window.innerHeight;
-
-
-      init();
-      animate();
-
-      function init() {
-        // CREATE CAMERA
-        camera = new THREE.PerspectiveCamera(40, aspectRatio, 1, 10000);
-        camera.position.z = 3000
-
-        // CREATE SCENE
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x000000);
-        
-        createElement();
-
-        for ( let i = 0; i < objects.length; i++) {
-          scene.add(objects[i]);
-        }
-        
-
-        // CREATE SIMPLE RENDERER
-        renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight - 100);
-        renderer.domElement.style.position = 'absolute';
-        renderer.domElement.style.bottom = 0;
-        document.getElementById('container').appendChild(renderer.domElement);
-
-
-        // CREATE cssRenderer 
-        cssRenderer = new CSS3DRenderer();
-        cssRenderer.setSize(window.innerWidth, window.innerHeight - 100);
-        cssRenderer.domElement.style.position = 'absolute';
-        cssRenderer.domElement.style.bottom = 0;
-        document.getElementById('container').appendChild(cssRenderer.domElement);
-        
-
-        // CREATE CONTROLLER
-        controls = new TrackballControls(camera, cssRenderer.domElement);
-        controls.minDistance = 500;
-        controls.maxDistance = 6000;
-
-        window.addEventListener('resize', onWindowResize);
+    checkWebGLSupport() {
+      if (WebGL.isWebGL2Available()) {
+        this.webGLSupport = true;
+      } else {
+        this.webGLSupport = false;
       }
+    }
+  }  
+}
+</script>
+<style lang="scss" scoped>
+.about {
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+  font-size: 18px;
+  padding-bottom: 75px;
+  height: 100%;
+}
+#about-container {
+  margin-bottom: 50px;
+  width: 100%;
+  height: auto;
 
-      // EVENT LISTENER ON WINDOW RESIZE
-      function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        cssRenderer.setSize(window.innerWidth, window.innerHeight);
-        cssRenderer.render(scene, camera);
-      }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
 
-      // 
-      function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-        cssRenderer.render(scene, camera);
-        controls.update();
+  #player-img-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    background-image:
+      linear-gradient(
+        90deg,
+        rgba(0,127,127, 0.6),
+        transparent 1px
+      ),
+      linear-gradient(
+        rgba(0,127,127, 0.6),
+        transparent 1px
+      );
+    background-size: 5px 5px;
+    pointer-events: none;
+  }
+  
+  #player-img {
+    width: 100%;
+    max-width: 550px;
+  }
+
+  #skill-box {
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    #caution {
+      padding: 25px;
+      width: 60%;
+      text-align: center;
+      background: rgba(0,127,127,0.2);
+      border-radius: 10px;
+      border: 2px solid rgba(0,127,127,1);
+      box-shadow: 0 0 10px rgba(0,127,127,1);
+
+      color: rgba(255,255,255,0.75);
+      text-shadow: 0 0 10px rgba(0,255,255,0.95);
+    }
+  }
+
+  #contacts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+
+      a {
+        color: white;
+        text-decoration: none;
       }
+    }
+    
+    i {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      font-size: 50px;
+      color: rgba(255,255,255,0.75);
+      text-shadow: 0 0 10px rgba(0,255,255,0.95);
+      background: rgba(0,127,127,0.5);
       
-      // 
-      function createElement() {
-        for ( let i = 0; i < stack.length; i += 2 ) {
-          const element = document.createElement('div');
-          element.className = 'element';
-          element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+    }
+  }
 
-          const title = document.createElement('div');
-          title.className = 'title';
-          title.textContent = stack[ i ];
-          element.appendChild(title);
+}
 
-          const period = document.createElement('div');
-          period.className = 'period';
-          const roundedYear = Number((stack[ i + 1 ] / 12).toFixed(1));
-          period.textContent = 'Period Of Study: ' + roundedYear + ' Years';
-          element.appendChild(period);
+// intersection observer
+.hidden {
+  opacity: 0;
+  transform: translateX(-15%);
+  transition: 350ms ease-out;
+}
 
-          const cssObject = new CSS3DObject(element);
-          cssObject.position.x = Math.random() * 2000 - 1200;
-          cssObject.position.y = Math.random() * 2000 - 1200;
-          cssObject.position.z = Math.random() * 2000 - 1200;
-          objects.push(cssObject);
-        }
-      } 
+.hidden.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 991px) {
+  #player-info {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
   }
 }
-</script>
-<style>
-.element {
-  width: 300px;
-  height: 120px;
-  color: #8ff;
-  box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
-  border: 1px solid rgba(127,255,255,0.25);
-  font-family: Helvetica, sans-serif;
-  text-align: center;
-  line-height: normal;
-  cursor: default;
-}
-.element .title {
-  position: absolute;
-  top: 15px;
-  left: 0px;
-  right: 0px;
-  font-size: 60px;
-  font-weight: bold;
-  color: rgba(255,255,255,0.75);
-  text-shadow: 0 0 10px rgba(0,255,255,0.95);
-}
-.element .period {
-  position: absolute;
-  bottom: 15px;
-  left: 0px;
-  right: 0px;
-  font-size: 12px;
-  color: rgba(127,255,255,0.75);
+@media (min-width: 992px) {
+  #player-info {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+
+    div {
+      width: calc(90% / 3);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
 }
 </style>

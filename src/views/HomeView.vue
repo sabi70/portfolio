@@ -1,18 +1,31 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <section>
+    <IntroSection />
+  </section>
+  <section>
+    <ServiceSection />
+  </section>
+  <section style="display: flex; align-items:center; justify-content: center;">
+    <InfiniteMarquee />
+  </section>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+// SECTIONS
+import IntroSection from '@/components/HomeSections/IntroSection.vue'
+import ServiceSection from '@/components/HomeSections/ServiceSection.vue'
+import InfiniteMarquee from '@/components/InfiniteMarquee.vue';
 
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld
-  }
+    IntroSection,
+    ServiceSection,
+    InfiniteMarquee
+  },
+  data() {
+    return {};
+  },  
 }
 </script>
+<style lang="scss" scoped></style>
